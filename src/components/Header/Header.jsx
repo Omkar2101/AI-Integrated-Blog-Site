@@ -9,66 +9,54 @@ function Header() {
   const navigate = useNavigate();
 
   const navItems = [
-    {
-      name: 'Home',
-      slug: "/",
-      active: true
-    }, 
-    {
-      name: "Login",
-      slug: "/login",
-      active: !authStatus,
-    },
-    {
-      name: "Signup",
-      slug: "/signup",
-      active: !authStatus,
-    },
-    {
-      name: "All Posts",
-      slug: "/all-posts",
-      active: authStatus,
-    },
-    {
-      name: 'Aibot',
-      slug: "/aibot",
-      active: true
-    },
-    {
-      name: "Add Post",
-      slug: "/add-post",
-      active: authStatus,
-    },
+    { name: 'Home', slug: "/", active: true },
+    { name: "Login", slug: "/login", active: !authStatus },
+    { name: "Signup", slug: "/signup", active: !authStatus },
+    { name: "All Posts", slug: "/all-posts", active: authStatus },
+    { name: 'Aibot', slug: "/aibot", active: true },
+    { name: "Add Post", slug: "/add-post", active: authStatus },
   ];
 
   return (
-    <header className='py-3 shadow bg-gray-800 animate-slideDown'>
+    <header className="bg-gradient-to-r from-gray-500 to-gray-800 py-4 shadow-lg">
       <Container>
-        <nav className='flex'>
-          <div className='mr-2'>
-            <Link to='/'>
-              <Logo width='70px' className='animate-fadeIn' />
+        <nav className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/">
+              <Logo width="80px" className="transition-transform duration-300 hover:scale-110" />
             </Link>
           </div>
-          <ul className='flex ml-auto'>
+
+          {/* Navigation Items */}
+          <ul className="hidden md:flex space-x-6">
             {navItems.map((item) =>
               item.active ? (
-                <li key={item.name} className='ml-4 animate-fadeIn'>
+                <li key={item.name}>
                   <button
                     onClick={() => navigate(item.slug)}
-                    className='inline-block px-6 py-2 duration-200 text-white text-xl hover:bg-black rounded-full transition ease-in-out'
+                    className="text-white text-lg px-4 py-2 rounded-full bg-transparent hover:bg-white hover:text-gray-800 transition-all duration-300 ease-in-out shadow-md"
                   >
                     {item.name}
                   </button>
                 </li>
               ) : null
             )}
-            {authStatus && (
-              <li className='ml-4 animate-fadeIn'>
-                <LogoutBtn />
-              </li>
-            )}
           </ul>
+
+          {/* Logout Button */}
+          {authStatus && (
+            <div className="hidden md:block">
+              <LogoutBtn />
+            </div>
+          )}
+
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <button className="text-white hover:text-gray-400 focus:outline-none">
+              <i className="fas fa-bars text-2xl"></i>
+            </button>
+          </div>
         </nav>
       </Container>
     </header>

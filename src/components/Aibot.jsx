@@ -20,21 +20,45 @@ function Aibot() {
       localStorage.setItem('questions', JSON.stringify(questions));
     }, [questions]);
   
+    // async function generator() {
+    //   setAnswer('...loading');
+    //   const response = await axios({
+    //     url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCRE8tFxm2wK9u-6Qwc3Y08Xhgh7JeFXqk',
+    //     method: 'post',
+    //     data: { 'contents': [{ 'parts': [{ 'text': question }] }] },
+    //   });
+    //   console.log(response);
+      
+    //   const newAnswer = response.data.candidates[0].content.parts[0].text;
+    //   setAnswer(newAnswer);
+  
+    //   // Add the new question to the list of questions
+    //   setQuestions([...questions, { question, answer: newAnswer }]);
+    //   setQuestion(''); // Clear the question input after generating the answer
+    // }
     async function generator() {
       setAnswer('...loading');
-      const response = await axios({
-        url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCRE8tFxm2wK9u-6Qwc3Y08Xhgh7JeFXqk',
-        method: 'post',
-        data: { 'contents': [{ 'parts': [{ 'text': question }] }] },
-      });
-  
-      const newAnswer = response.data.candidates[0].content.parts[0].text;
-      setAnswer(newAnswer);
-  
-      // Add the new question to the list of questions
-      setQuestions([...questions, { question, answer: newAnswer }]);
-      setQuestion(''); // Clear the question input after generating the answer
+      try {
+        const response = await axios({
+          url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=YOUR_API_KEY',
+          method: 'post',
+          data: { 'contents': [{ 'parts': [{ 'text': question }] }] },
+        });
+        const newAnswer = response.data.candidates[0].content.parts[0].text;
+        setAnswer(newAnswer);
+        setQuestions([...questions, { question, answer: newAnswer }]);
+        setQuestion('');
+      } catch (error) {
+        if (error.response && error.response.status === 429) {
+          console.warn('Rate limit hit, retrying after 5 seconds...');
+          setTimeout(generator, 5000); // Retry after 5 seconds
+        } else {
+          setAnswer('Error fetching the answer. Please try again later.');
+          console.error(error);
+        }
+      }
     }
+    
   
     return (
       <>
